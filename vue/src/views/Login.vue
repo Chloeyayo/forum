@@ -27,9 +27,13 @@ export default {
     return {
       loginForm:{
         username:'',
-      }
+      },
+      rules:{}
     };
   },
+  methods: {
+    onSubmit(){}
+    }
 };
 </script>
 
