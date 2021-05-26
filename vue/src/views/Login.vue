@@ -25,17 +25,28 @@
 export default {
   data() {
     return {
-      loginForm:{
-        username:'',
+      loginForm: {
+        username: "",
       },
-      rules:{}
+      rules: {},
     };
   },
   methods: {
-    onSubmit(){}
-    }
+    onSubmit() {},
+  },
 };
 </script>
 
 <style lang="less" scoped>
+#login {
+  display: flex;
+  height: 100vh;
+  justify-content: center;
+  align-items: center;
+  .login-container {
+  padding: 30px;
+  box-shadow: 0px 1px 15px rgba(0, 0, 0, 0.08);
+}
+}
+
 </style>
