@@ -1,39 +1,37 @@
 <template>
   <div id="login">
-    <div class="login-container">
-      <el-form
-        :model="loginForm"
-        ref="form"
-        :rules="rules"
-        label-width="80px"
-        :inline="false"
-        size="normal"
+    <loginForm v-if="isLogin"></loginForm>
+    <registerForm v-else></registerForm>
+    <div class="change-wrapper">
+      <el-button
+        type="text"
+        size="default"
+        @click="isLogin = !isLogin"
+        class="change-btn"
       >
-        <el-form-item label="Username" prop="用户名">
-          <el-input v-model="loginForm.username"></el-input>
-        </el-form-item>
-        <el-form-item>
-          <el-button type="primary" @click="onSubmit">立即创建</el-button>
-          <el-button>取消</el-button>
-        </el-form-item>
-      </el-form>
+        {{isLogin?"立即注册":"立即登录"}}</el-button
+      >
     </div>
   </div>
 </template>
 
 <script>
+import loginForm from '../components/login/loginForm'
+import registerForm from '../components/login/registerForm'
 export default {
   data() {
     return {
-      loginForm: {
-        username: "",
-      },
-      rules: {},
+      
+      isLogin: false,
     };
   },
   methods: {
     onSubmit() {},
   },
+  components: {
+    loginForm,
+    registerForm,
+  }
 };
 </script>
 
@@ -43,10 +41,15 @@ export default {
   height: 100vh;
   justify-content: center;
   align-items: center;
-  .login-container {
-  padding: 30px;
-  box-shadow: 0px 1px 15px rgba(0, 0, 0, 0.08);
+  flex-direction: column;
+  .container {
+    padding: 50px 20px 30px 0px;
+    box-shadow: 0px 1px 15px rgba(0, 0, 0, 0.08);
+    height:330px;
+  }
 }
+.change-wrapper {
+  width: 100%;
+  text-align: center;
 }
-
 </style>
