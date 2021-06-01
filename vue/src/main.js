@@ -5,7 +5,10 @@ import store from './store'
 import "modern-normalize/modern-normalize.css"
 import ElementUI from 'element-ui';
 import 'element-ui/lib/theme-chalk/index.css';
+import axios from "./request/http"
 
+
+Vue.prototype.$http=axios
 Vue.config.productionTip = false
 Vue.use(ElementUI);
 
