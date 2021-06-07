@@ -5,6 +5,7 @@
         v-if="isLogin"
         @changeStatus="changeStatus"
         @closeWrapper="closeWrapper"
+        @reload="reload"
       ></loginForm>
       <registerForm
         v-else
@@ -29,7 +30,6 @@ export default {
   methods: {
     onSubmit() {},
     changeVisibility(e) {
-      console.log(e.target.className);
       if (e.target.className.indexOf("wrapper") != -1) {
         this.$emit("handleClose");
       }
@@ -40,6 +40,9 @@ export default {
     closeWrapper() {
       this.$emit("handleClose");
     },
+    reload(){
+      this.$emit("reload");
+    }
   },
   components: {
     loginForm,

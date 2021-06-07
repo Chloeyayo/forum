@@ -28,47 +28,60 @@
       <el-form-item class="form-footer">
         <el-button type="primary" @click="onSubmit(loginForm)">登录</el-button>
         <el-button>取消</el-button>
-      <div class="change-wrapper">
-        <el-button
-          type="text"
-          size="default"
-          @click="changeStatus"
-          class="change-btn"
-        >
-         立即注册</el-button
-        >
-      </div>
+        <div class="change-wrapper">
+          <el-button
+            type="text"
+            size="default"
+            @click="changeStatus"
+            class="change-btn"
+          >
+            立即注册</el-button
+          >
+        </div>
       </el-form-item>
     </el-form>
   </div>
 </template>
 
 <script>
-import Api from "@/request/api"
+import Api from "@/request/api";
 export default {
   data() {
     return {
       loginForm: {
-        email: "",
-        password: "",
+        email: "1",
+        password: "1",
       },
       rules: {},
     };
   },
   methods: {
-    async onSubmit (data) {
-      const result=await Api.loginApi(data)
-      console.log(result);
+    async onSubmit(form) {
+      const { data: data } = await Api.loginApi(form);
+      window.sessionStorage.setItem("token", "Bearer " + data.token);
+      window.sessionStorage.setItem("nickname", data.nickname);
+      console.log(data);
+      switch (data.err_code) {
+        case 1:
+          return this.$message.error("邮箱或密码错误");
+      }
+      this.$message.success("登录成功")
+      this.closeWrapper()
+
     },
-    changeStatus(){
-      this.$emit("changeStatus")
+    changeStatus() {
+      this.$emit("changeStatus");
+    },
+    closeWrapper(){
+      this.$emit("closeWrapper");
+      this.$emit("reload")
     }
   },
 };
 </script>
 
 <style lang="less" scoped>
-.change-wrapper{
-  text-align:center;
+.change-wrapper {
+  text-align: center;
 }
 </style>

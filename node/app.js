@@ -20,6 +20,11 @@ app.all("*", function (req, res, next) {
   next();
 });
 
+app.use((req, res, next) => {
+  console.log("123");
+  next()
+})
+
 app.use(userRouter)
 
 app.listen("3000", () => {
