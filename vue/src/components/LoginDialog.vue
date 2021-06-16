@@ -1,11 +1,12 @@
 <template>
   <div id="login">
-    <div class="wrapper" v-show="visible" @click="changeVisibility">
+    <div class="wrapper" v-show="visible" @mousedown="changeVisibility">
       <loginForm
         v-if="isLogin"
         @changeStatus="changeStatus"
         @closeWrapper="closeWrapper"
         @reload="reload"
+        @getUser="getUser"
       ></loginForm>
       <registerForm
         v-else
@@ -42,6 +43,9 @@ export default {
     },
     reload(){
       this.$emit("reload");
+    },
+    getUser(data) {
+      this.$emit("getUser",data)
     }
   },
   components: {

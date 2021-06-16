@@ -4,15 +4,11 @@ const router = express.Router();
 //导出路由对象，在app.js文件中挂载router;
 const User = require('../models/users')
 const jwt = require('../lib/token')
+const bcrypt = require('bcrypt')
+const URL = require("url")
 
-router.get('/', (req, res) => {
-  console.log(req.query);
-  res.json({
-    success: true,
-  })
-})
 
-router.post("/user/register", async (req, res) => {
+router.post("/register", async (req, res) => {
   const body = req.body;
   const findEmailResult = await User.findOne({ email: body.email }).catch(err => {
     console.log(err);
@@ -43,7 +39,7 @@ router.post("/user/register", async (req, res) => {
     })
   }
 
-  const user = await new User(req.body).save().catch(err => {
+  const user = await User.create(req.body).catch(err => {
     console.log(err);
     return res.json({
       err_code: 1,
@@ -59,12 +55,10 @@ router.post("/user/register", async (req, res) => {
 
 })
 
-router.post("/user/login", async (req, res) => {
-  console.log(req.headers);
+router.post("/login", async (req, res) => {
   const body = req.body;
   const findResult = await User.findOne({
-    email: body.email,
-    password: body.password
+    email: body.email
   })
   if (!findResult) {
     return res.json({
@@ -72,13 +66,30 @@ router.post("/user/login", async (req, res) => {
       msg: "未找到用户"
     })
   }
-  const token =await jwt.setToken(findResult.email).catch(err => {console.log(err);})
-  console.log(token);
+
+  const compare = await bcrypt.compare(body.password, findResult.password)
+  if (!compare) {
+    return res.json({
+      err_code: 2,
+      msg: "密码错误"
+    })
+  }
+
+  const token = await jwt.setToken(findResult.email).catch(err => { console.log(err); })
+  findResult.avatar=req.protocol + '://' + req.get('host')+findResult.avatar
+  console.log(findResult);
   res.json({
-    err_code:0,
-    nickname:findResult.nickname,
+    err_code: 0,
+    user: findResult,
+
     token,
   })
 })
 
+router.post("/profile", async (req, res) => {
+  const user = await User.findOne({ email: req.user.email })
+  user.avatar=req.protocol + '://' + req.get('host')+user.avatar
+  res.json(user)
+
+})
 module.exports = router

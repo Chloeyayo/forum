@@ -36,7 +36,7 @@
         <el-button type="primary" @click="onSubmit(loginForm)"
           >立即创建</el-button
         >
-        <el-button>取消</el-button>
+        <el-button @click="closeWrapper">取消</el-button>
       </el-form-item>
     </el-form>
   </div>
@@ -70,6 +70,10 @@ export default {
       }
       this.$message.success("注册成功")
       this.$emit("closeWrapper")
+    },
+        closeWrapper() {
+      this.$emit("closeWrapper");
+      this.$emit("reload");
     },
   },
 };

@@ -3,7 +3,7 @@
     <div class="header" v-if="update">
       <div class="container">
         <div class="header-left"></div>
-        <div class="header-right login-wrapper" v-if="!nickname">
+        <div class="header-right login-wrapper" v-if="!userInfo.nickname">
           <el-button
             type="text"
             size="small"
@@ -20,9 +20,14 @@
           >
         </div>
         <div class="header-right logout-wrapper" v-else>
-          <div class="nickname">
-            {{ nickname }}
-          </div>
+          <el-button
+            type="text"
+            size="small"
+            @click="profileBtn"
+            class="nickname btn"
+            ><el-avatar :src="userInfo.avatar"></el-avatar
+            ></el-button
+          >
           <el-button
             type="text"
             size="small"
@@ -40,6 +45,7 @@
       @handleClose="handleLoginDialogClose"
       @changeStatus="changeStatus"
       @reload="reload"
+      @getUser="getUser"
     ></login>
   </div>
 </template>
@@ -51,7 +57,10 @@ export default {
     return {
       loginDialogVisible: false,
       isLogin: true,
-      nickname: window.sessionStorage.getItem("nickname"),
+      userInfo: {
+        nickname: window.sessionStorage['nickname'],
+        avatar: window.sessionStorage['avatar'],
+      },
       update: true,
     };
   },
@@ -72,21 +81,36 @@ export default {
     },
     logoutBtn() {
       window.sessionStorage.removeItem("nickname");
-      this.nickname = "";
-      window.sessionStorage.removeItem("token");
-      this.reload();
+      this.userInfo = {};
+      window.sessionStorage.removeItem("authorization");
+      this.$router.push('/home')
     },
     reload() {
       this.update = false;
       this.$nextTick(() => {
         this.update = true;
-        console.log("updated");
         this.nickname = window.sessionStorage.getItem("nickname");
       });
+    },
+    profileBtn() {
+      this.$router.push({ name: "Profile" });
+    },
+    getUser(data) {
+      this.userInfo = data.user;
+      console.log(this.userInfo);
     },
   },
   components: {
     login,
+  },
+  filters: {
+    ellipsis(value) {
+      if (!value) return "";
+      if (value.length > 10) {
+        return value.slice(0, 10) + "...";
+      }
+      return value;
+    },
   },
 };
 </script>
@@ -95,9 +119,10 @@ export default {
 .header {
   border-bottom: 1px solid rgba(179, 179, 179, 0.2);
   background-color: #fff;
-  box-shadow: 0 1px 1px rgba(0, 0, 0, 0.01), 0 10px 30px rgba(0, 0, 0, 0.08);
+  box-shadow: 0 1px 1px rgba(0, 0, 0, 0.01), 0 5px 10px rgba(0, 0, 0, 0.08);
+  position: relative;
   .container {
-    width: 1140px;
+    max-width: 1140px;
     height: 60px;
     margin: 0 auto;
     padding: 10px 0px;
@@ -111,12 +136,12 @@ export default {
       display: flex;
       justify-content: flex-end;
       .nickname {
-        margin-right: 20px;
         line-height: 40px;
-        
+        padding: 0 20px;
+        border-right: 1px solid rgba(0, 0, 0, 0.3);
       }
       .btn {
-        margin-right: 20px;
+        margin-left: 20px;
         font-size: 18px;
         color: rgb(85, 85, 85);
         font-weight: 800;

@@ -5,8 +5,8 @@ const server = axios.create({
 
 server.interceptors.request.use(
   config => {
-    if(window.sessionStorage.getItem("token")){
-      config.headers.Authorization =sessionStorage.getItem('token')
+    if(window.sessionStorage.getItem("authorization")){
+      config.headers.authorization =sessionStorage.getItem('authorization')
     }
     return config
   },

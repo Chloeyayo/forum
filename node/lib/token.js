@@ -10,7 +10,11 @@ exports.setToken = function (email) {
 
 exports.verifyToken = function (token) {
   return new Promise((resolve, reject) => {
-    const decoded = jwt.verify(token.split(' ')[1], signkey)
-    resolve(decoded)
+    try {
+      const decoded = jwt.verify(token.split(' ')[1], signkey)
+      resolve(decoded)
+    } catch (error) {
+      reject(error)
+    }
   })
 }

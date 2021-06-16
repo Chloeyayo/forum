@@ -5,5 +5,8 @@ export default {
   },
   loginApi(data){
     return axios.post("/user/login",data)
+  },
+  profileApi(token){
+    return axios.post("/user/profile",{token})
   }
 }

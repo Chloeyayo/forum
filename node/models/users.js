@@ -14,7 +14,10 @@ const UserSchema = mongoose.Schema({
   },
   password: {
     type: String,
-    required: true
+    required: true,
+    set(value) {
+      return require('bcrypt').hashSync(value,10);
+    }
   },
   created_time: {
     type: Date,

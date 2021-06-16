@@ -23,11 +23,12 @@
           prefix-icon="el-icon-lock"
           v-model="loginForm.password"
           show-password
+          @keyup.enter.native="onSubmit(loginForm)"
         ></el-input>
       </el-form-item>
       <el-form-item class="form-footer">
         <el-button type="primary" @click="onSubmit(loginForm)">登录</el-button>
-        <el-button>取消</el-button>
+        <el-button @click="closeWrapper">取消</el-button>
         <div class="change-wrapper">
           <el-button
             type="text"
@@ -58,24 +59,29 @@ export default {
   methods: {
     async onSubmit(form) {
       const { data: data } = await Api.loginApi(form);
-      window.sessionStorage.setItem("token", "Bearer " + data.token);
-      window.sessionStorage.setItem("nickname", data.nickname);
       console.log(data);
       switch (data.err_code) {
         case 1:
-          return this.$message.error("邮箱或密码错误");
+          this.$message.error("邮箱不存在");
+          return
+        case 2:
+          this.$message.error("邮箱或密码错误");
+          return
       }
-      this.$message.success("登录成功")
-      this.closeWrapper()
-
+      window.sessionStorage.setItem("authorization", "Bearer " + data.token);
+      window.sessionStorage.setItem("nickname", data.user.nickname);
+      window.sessionStorage.setItem("avatar", data.user.avatar);
+      this.$emit("getUser",data)
+      this.$message.success("登录成功");
+      this.closeWrapper();
     },
     changeStatus() {
       this.$emit("changeStatus");
     },
-    closeWrapper(){
+    closeWrapper() {
       this.$emit("closeWrapper");
-      this.$emit("reload")
-    }
+      this.$emit("reload");
+    },
   },
 };
 </script>
